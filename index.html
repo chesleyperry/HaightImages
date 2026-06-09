@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Death of Hippie — Haight-Ashbury, San Francisco, 1967</title>
+<meta name="description" content="A black-and-white photo essay of San Francisco's Haight-Ashbury during the 'Death of Hippie' period, 1967 (collection ms0020).">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-2: #161514;
+    --cream: #e8e3d8;
+    --cream-dim: #a39d90;
+    --frame: #cfc9ba;
+    --accent: #c9a86a;
+    --serif: Georgia, "Times New Roman", "Hoefler Text", serif;
+    --fade: 600ms;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    font-family: var(--serif);
+    color: var(--cream);
+    background: radial-gradient(ellipse at 50% 38%, var(--bg-2) 0%, var(--bg) 62%, #050505 100%);
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Header ---------- */
+  header.site {
+    text-align: center;
+    padding: 1.6rem 1rem 0.4rem;
+    flex: 0 0 auto;
+  }
+  header.site h1 {
+    margin: 0;
+    font-weight: 400;
+    font-size: clamp(1.15rem, 2.6vw, 1.7rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  header.site .sub {
+    margin: 0.35rem 0 0;
+    color: var(--cream-dim);
+    font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Stage ---------- */
+  main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    min-height: 0;
+  }
+
+  .stage {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  /* Film-frame around the photo */
+  .frame {
+    position: relative;
+    padding: 10px;
+    background:
+      linear-gradient(#0d0d0d, #0d0d0d) padding-box,
+      #000 border-box;
+    border: 1px solid rgba(207, 201, 186, 0.35);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.6),
+      0 24px 60px rgba(0,0,0,0.75);
+    max-width: 100%;
+    line-height: 0;
+  }
+
+  .frame img {
+    display: block;
+    max-width: 100%;
+    max-height: 72vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity var(--fade) ease;
+  }
+  .frame img.is-visible { opacity: 1; }
+
+  /* Click zones for prev/next over the image */
+  .zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 38%;
+    cursor: pointer;
+    z-index: 3;
+    background: transparent;
+    border: 0;
+  }
+  .zone.prev { left: 0; cursor: w-resize; }
+  .zone.next { right: 0; cursor: e-resize; }
+
+  /* Arrow buttons */
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    background: rgba(10,10,10,0.55);
+    color: var(--cream);
+    border: 1px solid rgba(207,201,186,0.3);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 200ms ease, opacity 200ms ease;
+    opacity: 0.35;
+  }
+  .stage:hover .nav { opacity: 0.9; }
+  .nav:hover, .nav:focus-visible { background: rgba(201,168,106,0.85); color: #0a0a0a; opacity: 1; }
+  .nav.prev { left: -8px; }
+  .nav.next { right: -8px; }
+
+  /* ---------- Caption ---------- */
+  .caption {
+    text-align: center;
+    max-width: 760px;
+    margin: 1.1rem auto 0.2rem;
+    padding: 0 1rem;
+    flex: 0 0 auto;
+  }
+  .caption .title {
+    font-size: clamp(1.1rem, 2.4vw, 1.55rem);
+    font-style: italic;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+  .caption .desc {
+    color: var(--cream-dim);
+    font-size: clamp(0.82rem, 1.7vw, 0.98rem);
+    line-height: 1.5;
+    margin: 0.5rem 0 0;
+  }
+  .caption .meta {
+    margin-top: 0.7rem;
+    color: var(--accent);
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Controls / progress ---------- */
+  .progress {
+    width: min(760px, 90vw);
+    height: 2px;
+    background: rgba(207,201,186,0.14);
+    margin: 1rem auto 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress > span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: width 120ms linear;
+  }
+
+  .controls {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    align-items: center;
+    padding: 0.9rem 1rem 0.4rem;
+    flex-wrap: wrap;
+  }
+  .controls button {
+    background: transparent;
+    color: var(--cream-dim);
+    border: 1px solid rgba(207,201,186,0.25);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-family: var(--serif);
+    font-size: 0.74rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+  .controls button:hover,
+  .controls button:focus-visible {
+    color: #0a0a0a;
+    background: var(--cream);
+    border-color: var(--cream);
+  }
+
+  /* ---------- Thumbnail strip ---------- */
+  .thumbs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0.6rem max(1rem, 4vw) 1.3rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(207,201,186,0.3) transparent;
+  }
+  .thumbs[hidden] { display: none; }
+  .thumbs button {
+    flex: 0 0 auto;
+    padding: 0;
+    border: 1px solid transparent;
+    background: #000;
+    cursor: pointer;
+    line-height: 0;
+    opacity: 0.5;
+    transition: opacity 180ms ease, border-color 180ms ease;
+  }
+  .thumbs button img {
+    height: 56px;
+    width: auto;
+    display: block;
+    filter: grayscale(20%) contrast(1.05);
+  }
+  .thumbs button:hover { opacity: 0.85; }
+  .thumbs button.active {
+    opacity: 1;
+    border-color: var(--accent);
+  }
+
+  /* ---------- Footer ---------- */
+  footer.site {
+    text-align: center;
+    color: var(--cream-dim);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    padding: 0.4rem 1rem 1.4rem;
+    flex: 0 0 auto;
+  }
+  footer.site a { color: var(--accent); text-decoration: none; }
+  footer.site a:hover { text-decoration: underline; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  @media (max-width: 640px) {
+    .frame img { max-height: 56vh; }
+    .nav { display: none; }
+    header.site { padding-top: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .frame img { transition: none; }
+    .progress > span { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <header class="site">
+    <h1>Death of Hippie</h1>
+    <p class="sub">Haight-Ashbury &middot; San Francisco &middot; 1967</p>
+  </header>
+
+  <main>
+    <div class="stage">
+      <button class="nav prev" type="button" aria-label="Previous photo">&#8249;</button>
+
+      <figure class="frame" id="frame">
+        <!-- two stacked images allow crossfading -->
+        <img id="imgA" alt="">
+        <button class="zone prev" type="button" aria-label="Previous photo" tabindex="-1"></button>
+        <button class="zone next" type="button" aria-label="Next photo" tabindex="-1"></button>
+      </figure>
+
+      <button class="nav next" type="button" aria-label="Next photo">&#8250;</button>
+    </div>
+
+    <figcaption class="caption" aria-live="polite">
+      <p class="title" id="capTitle"></p>
+      <p class="desc" id="capDesc"></p>
+      <p class="meta" id="capMeta"></p>
+    </figcaption>
+
+    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+    <div class="controls">
+      <button type="button" id="btnPrev" aria-label="Previous photo">&#8249; Prev</button>
+      <button type="button" id="btnPlay" aria-label="Play slideshow">Play</button>
+      <button type="button" id="btnNext" aria-label="Next photo">Next &#8250;</button>
+      <button type="button" id="btnThumbs" aria-pressed="true" aria-label="Toggle thumbnails">Thumbnails</button>
+    </div>
+  </main>
+
+  <nav class="thumbs" id="thumbs" aria-label="Choose a photo"></nav>
+
+  <footer class="site">
+    20 photographs &middot; collection <strong>ms0020</strong> &middot;
+    use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to navigate, <kbd>Space</kbd> to play
+  </footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- Image metadata: archival frame order 01 -> 20 ----
+  var PHOTOS = [
+    {
+      src: "ms0020_neg_rmb-6702_01.jpg",
+      title: "Place Your Free Personal Ad",
+      desc: "A storefront window classified for the counterculture: connection on offer to anyone who asks.",
+      alt: "A handwritten sign taped inside a window reads, “Do You Want: A Lover? A Wife/Husband? A Home? A Pad? Chain? Velvet? Leather? Bed Mate? Pen Pal? To Take-A-Trip? Anything? Then Place Your FREE Personal Ad Here — Haight Ashbury Free Press.”"
+    },
+    {
+      src: "ms0020_neg_rmb-6702_02.jpg",
+      title: "“…Would Make Men Free” — Martin Buber",
+      desc: "The movement turning a sceptical eye on its own symbols.",
+      alt: "A hand-lettered sign in a shop window quotes Martin Buber: “If I could believe wearing beads made men hippies, then I could believe removing them would make men free,” with the words “But Not On Me” lettered above it."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_03.jpg",
+      title: "All You Need Is Love",
+      desc: "A collage of window messages, hope and despair taped side by side.",
+      alt: "Several overlapping handwritten signs taped in a window, including “Sometimes a great notion to jump in the river and drown,” “All you need is Love, Love is all you need,” and the words “Pro Patria.”"
+    },
+    {
+      src: "ms0020_neg_rmb-6702_04.jpg",
+      title: "Spare Change, Food, Dope, or Whatever",
+      desc: "Street life rendered in sidewalk chalk beside a bundled bedroll.",
+      alt: "A sidewalk drawn in chalk: a circle reads “Spare Change, Food, Dope, or Whatever” beside a swirling chalk design and a bundled sleeping bag, set against a tiled storefront wall."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_05.jpg",
+      title: "In the Beginning There Were People",
+      desc: "A wry origin story, hand-printed on a scrap of card.",
+      alt: "A handwritten card propped among other paper notices reads, “In the beginning there were People. Some of us had or didn’t have Beards.”"
+    },
+    {
+      src: "ms0020_neg_rmb-6702_06.jpg",
+      title: "We Can Now Be Free",
+      desc: "An elegant farewell in flowing cursive.",
+      alt: "An elegant cursive sign reads, “Thank you for telling us we can now be free,” resting among other paper notices in a window."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_07.jpg",
+      title: "Closing Notice — The Free Medical Clinic",
+      desc: "The Haight Ashbury Free Medical Clinic posts its hours and where to seek emergency help.",
+      alt: "A hand-lettered closing notice in a window: “We will be closed at 4:00 PM Fri., Sept. 22 (today). No patients will be seen for any reason after that time. Emergency Help: S.F. Gen’l (22nd and Potrero), Park Emergency (Frederick and Stanyan). We hope to re-open.”"
+    },
+    {
+      src: "ms0020_neg_rmb-6702_08.jpg",
+      title: "The Dove on the Clinic Door",
+      desc: "The same notice, seen through the clinic’s emblematic glass door.",
+      alt: "The closing notice viewed through a glass door bearing a stained-glass dove emblem, with an ornate brass lock and buzzer at right — the door of the Haight Ashbury Free Medical Clinic."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_09.jpg",
+      title: "Death of Hippie, Birth of the Free American",
+      desc: "The banner that named the moment, strung across Haight Street.",
+      alt: "A banner strung high across Haight Street reads, “Death of Hippie Freebie… i.e., Birth of the Free American,” above a row of parked 1960s cars, storefronts including Pacific Drugs, and pedestrians on the sidewalk."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_10.jpg",
+      title: "Inking the Poster",
+      desc: "An artist at work on the pavement, building a poster line by line.",
+      alt: "A long-haired young man in a white T-shirt sits cross-legged on sunlit pavement, pen in hand, inking concentric lines onto a large psychedelic poster propped on a board."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_11.jpg",
+      title: "Steady Hand",
+      desc: "Closer in, the bold striped pattern takes shape.",
+      alt: "A close view of the same artist leaning over his drawing board, carefully inking the bold striped pattern of the poster."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_12.jpg",
+      title: "Lines and Curves",
+      desc: "The design’s nested arches emerge under a careful pen.",
+      alt: "The artist’s hand traces a curving black line across the poster as the nested arches of the design begin to take form."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_13.jpg",
+      title: "Concentration",
+      desc: "Lost in the work, hair falling forward over the page.",
+      alt: "The young artist bent low over his work, hair falling forward, pen poised on the emerging psychedelic design."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_14.jpg",
+      title: "Pepsi and Patience",
+      desc: "A wider view of the open-air studio: ink, a bottle, a folded cloth.",
+      alt: "A wider view of the artist at work on the pavement, with an empty Pepsi bottle, a bottle of ink, and a folded cloth beside him in the sun."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_15.jpg",
+      title: "Flowers in Her Hair",
+      desc: "A quiet moment in the park, a small dog wrapped close.",
+      alt: "In a park, a young woman with flowers braided into her upswept hair stands in profile, cradling a small dog wrapped in a pale shawl; people gather on the grass behind her."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_16.jpg",
+      title: "A Steady Gaze",
+      desc: "Barefoot on the grass, meeting the camera head-on.",
+      alt: "A barefoot young woman with flowers in her hair stands with her arms crossed, facing the camera, a tiny dog on a leash at her feet and a crowd scattered on the grass behind her."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_17.jpg",
+      title: "Holding the Pup",
+      desc: "A chihuahua held to the chest amid the gathering.",
+      alt: "A young woman in a light dress holds a small chihuahua puppy against her chest, flowers in her hair, with festival-goers milling behind her in the park."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_18.jpg",
+      title: "In the Panhandle",
+      desc: "A tender downward glance in the dappled park light.",
+      alt: "A barefoot woman cradles her small dog and looks down at it tenderly, surrounded by a relaxed gathering of people on the park lawn."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_19.jpg",
+      title: "Barefoot on the Grass",
+      desc: "The same young woman among the crowd, dog held close.",
+      alt: "The same young woman stands barefoot on leaf-strewn grass, holding her dog close to her body, with a crowd of onlookers behind her."
+    },
+    {
+      src: "ms0020_neg_rmb-6702_20.jpg",
+      title: "The Monkey on His Shoulder",
+      desc: "A grinning portrait that closes the sequence on a lighter note.",
+      alt: "A smiling young man with long fair hair and a beaded necklace turns his head toward a squirrel monkey perched on his shoulder, a city building blurred in the background."
+    }
+  ];
+
+  var TOTAL = PHOTOS.length;
+  var INTERVAL = 5000;
+
+  var img = document.getElementById("imgA");
+  var capTitle = document.getElementById("capTitle");
+  var capDesc = document.getElementById("capDesc");
+  var capMeta = document.getElementById("capMeta");
+  var progressBar = document.getElementById("progressBar");
+  var thumbsEl = document.getElementById("thumbs");
+
+  var index = 0;
+  var playing = false;
+  var timer = null;
+  var progTimer = null;
+  var progStart = 0;
+  var thumbButtons = [];
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+  // Preload neighbouring frames for smooth advance
+  function preload(i) {
+    var p = PHOTOS[(i + TOTAL) % TOTAL];
+    var im = new Image();
+    im.src = p.src;
+  }
+
+  function render(i) {
+    index = (i + TOTAL) % TOTAL;
+    var p = PHOTOS[index];
+
+    img.classList.remove("is-visible");
+    // swap source once the fade-out has begun
+    window.setTimeout(function () {
+      img.src = p.src;
+      img.alt = p.alt;
+      // when the (possibly cached) image is ready, fade in
+      if (img.complete) {
+        img.classList.add("is-visible");
+      } else {
+        img.onload = function () { img.classList.add("is-visible"); };
+      }
+    }, 60);
+
+    capTitle.textContent = p.title;
+    capDesc.textContent = p.desc;
+    capMeta.textContent = "Frame " + pad(index + 1) + " / " + pad(TOTAL);
+
+    thumbButtons.forEach(function (b, bi) {
+      var on = bi === index;
+      b.classList.toggle("active", on);
+      if (on) b.setAttribute("aria-current", "true");
+      else b.removeAttribute("aria-current");
+    });
+
+    preload(index + 1);
+    preload(index - 1);
+    if (playing) restartProgress();
+  }
+
+  function go(delta) { render(index + delta); }
+
+  // ---- Autoplay ----
+  function restartProgress() {
+    progStart = Date.now();
+    progressBar.style.width = "0%";
+    if (progTimer) clearInterval(progTimer);
+    progTimer = setInterval(function () {
+      var pct = Math.min(100, ((Date.now() - progStart) / INTERVAL) * 100);
+      progressBar.style.width = pct + "%";
+    }, 80);
+  }
+
+  function play() {
+    if (playing) return;
+    playing = true;
+    btnPlay.textContent = "Pause";
+    btnPlay.setAttribute("aria-label", "Pause slideshow");
+    restartProgress();
+    timer = setInterval(function () { go(1); }, INTERVAL);
+  }
+
+  function pause() {
+    playing = false;
+    btnPlay.textContent = "Play";
+    btnPlay.setAttribute("aria-label", "Play slideshow");
+    if (timer) clearInterval(timer);
+    if (progTimer) clearInterval(progTimer);
+    progressBar.style.width = "0%";
+  }
+
+  function togglePlay() { playing ? pause() : play(); }
+
+  // ---- Build thumbnails ----
+  PHOTOS.forEach(function (p, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Go to frame " + (i + 1) + ": " + p.title);
+    var t = document.createElement("img");
+    t.src = p.src;
+    t.alt = "";
+    t.loading = "lazy";
+    b.appendChild(t);
+    b.addEventListener("click", function () {
+      pause();
+      render(i);
+      b.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    });
+    thumbsEl.appendChild(b);
+    thumbButtons.push(b);
+  });
+
+  // ---- Wire controls ----
+  var btnPrev = document.getElementById("btnPrev");
+  var btnNext = document.getElementById("btnNext");
+  var btnPlay = document.getElementById("btnPlay");
+  var btnThumbs = document.getElementById("btnThumbs");
+
+  function manualPrev() { pause(); go(-1); }
+  function manualNext() { pause(); go(1); }
+
+  btnPrev.addEventListener("click", manualPrev);
+  btnNext.addEventListener("click", manualNext);
+  btnPlay.addEventListener("click", togglePlay);
+
+  document.querySelectorAll(".nav.prev, .zone.prev").forEach(function (el) {
+    el.addEventListener("click", manualPrev);
+  });
+  document.querySelectorAll(".nav.next, .zone.next").forEach(function (el) {
+    el.addEventListener("click", manualNext);
+  });
+
+  btnThumbs.addEventListener("click", function () {
+    var hidden = thumbsEl.hasAttribute("hidden");
+    if (hidden) thumbsEl.removeAttribute("hidden");
+    else thumbsEl.setAttribute("hidden", "");
+    btnThumbs.setAttribute("aria-pressed", String(hidden));
+  });
+
+  // ---- Keyboard ----
+  document.addEventListener("keydown", function (e) {
+    switch (e.key) {
+      case "ArrowLeft":  manualPrev(); break;
+      case "ArrowRight": manualNext(); break;
+      case "Home":       pause(); render(0); break;
+      case "End":        pause(); render(TOTAL - 1); break;
+      case "t": case "T": btnThumbs.click(); break;
+      case " ": case "Spacebar":
+        e.preventDefault();
+        togglePlay();
+        break;
+      default: return;
+    }
+  });
+
+  // Pause autoplay while hovering the stage so visitors can linger
+  var stage = document.querySelector(".stage");
+  stage.addEventListener("mouseenter", function () {
+    if (playing) { stage.dataset.resume = "1"; pause(); }
+  });
+  stage.addEventListener("mouseleave", function () {
+    if (stage.dataset.resume === "1") { stage.dataset.resume = ""; play(); }
+  });
+
+  // ---- Go ----
+  render(0);
+})();
+</script>
+</body>
+</html>
